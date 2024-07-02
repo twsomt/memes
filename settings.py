@@ -5,7 +5,7 @@ DEBUG = True
 TAGS = 'Мемы тут'
 
 # Версия апи
-APi_VERSION = 'v1'
+API_VERSION = 'v1'
 
 # Префикс ручек
-PREFIX = f'/api/{APi_VERSION}/memes'
+PREFIX = f'/api/{API_VERSION}/memes'
