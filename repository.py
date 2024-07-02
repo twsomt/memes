@@ -1,0 +1,93 @@
+from fastapi import status
+from sqlalchemy import select
+
+from custom_exceptions import MemeNotFound
+from database import MemeOrm, new_session
+from decorators import handle_exceptions
+from schemas import Smeme, SmemeAdd, SmemeUpdate
+
+
+class MemeRepository:
+    @classmethod
+    @handle_exceptions
+    async def add_one(
+        cls,
+        data: SmemeAdd
+    ) -> Smeme:
+        async with new_session() as session:
+            meme_dict = data.model_dump()
+            meme = MemeOrm(**meme_dict)
+            session.add(meme)
+            await session.flush()
+            await session.commit()
+            meme_schema = Smeme.model_validate(meme)
+            return meme_schema
+
+    @classmethod
+    @handle_exceptions
+    async def get_all(
+        cls,
+        offset: int = 0,
+        limit: int = 10
+    ) -> list[Smeme]:
+        async with new_session() as session:
+            query = select(MemeOrm).offset(offset).limit(limit)
+            result = await session.execute(query)
+            meme_models = result.scalars().all()
+            meme_schemas = [Smeme.model_validate(
+                meme_model) for meme_model in meme_models]
+            return meme_schemas
+
+    @classmethod
+    @handle_exceptions
+    async def get_one(
+        cls,
+        meme_id: int
+    ) -> Smeme:
+        async with new_session() as session:
+            query = select(MemeOrm).where(MemeOrm.id == meme_id)
+            result = await session.execute(query)
+            meme_model = result.scalars().first()
+            if not meme_model:
+                raise MemeNotFound()
+            meme_schema = Smeme.model_validate(meme_model)
+            return meme_schema
+
+    @classmethod
+    @handle_exceptions
+    async def update_one(
+        cls,
+        meme_id: int,
+        update_data: SmemeUpdate
+    ) -> Smeme:
+        async with new_session() as session:
+            query = select(MemeOrm).where(MemeOrm.id == meme_id)
+            result = await session.execute(query)
+            meme_model = result.scalars().first()
+            if not meme_model:
+                raise MemeNotFound()
+            for key, value in update_data.model_dump(
+                exclude_unset=True
+            ).items():
+                setattr(meme_model, key, value)
+            await session.commit()
+            await session.refresh(meme_model)
+            meme_schema = Smeme.model_validate(meme_model)
+            return meme_schema
+
+    @classmethod
+    @handle_exceptions
+    async def delete_one(
+        cls,
+        meme_id: int
+    ) -> dict:
+        async with new_session() as session:
+            query = select(MemeOrm).where(MemeOrm.id == meme_id)
+            result = await session.execute(query)
+            meme_model = result.scalars().first()
+            if not meme_model:
+                raise MemeNotFound()
+            await session.delete(meme_model)
+            await session.commit()
+            return {"status": "success",
+                    "status_code": status.HTTP_204_NO_CONTENT}
