@@ -34,6 +34,7 @@ class MemeRepository:
             query = select(MemeOrm).offset(offset).limit(limit)
             result = await session.execute(query)
             meme_models = result.scalars().all()
+            # Ничего не рейзим, если пусто то просто возвращаем пустой массив
             meme_schemas = [Smeme.model_validate(
                 meme_model) for meme_model in meme_models]
             return meme_schemas
