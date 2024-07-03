@@ -1,10 +1,30 @@
 from typing import Optional
+from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+import os
 
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+load_dotenv()
 
-engine = create_async_engine("sqlite+aiosqlite:///memes.db")
-new_session = async_sessionmaker(engine, expire_on_commit=False)
+
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_DB_NAME = os.getenv('POSTGRES_DB_NAME')
+
+# Асинк постгрес
+DATABASE_URL = ('postgresql+asyncpg://'
+                f'{POSTGRES_USER}:{POSTGRES_PASSWORD}'
+                f'@{POSTGRES_HOST}/{POSTGRES_DB_NAME}')
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True
+)
+new_session = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
 
 
 class Model(DeclarativeBase):
