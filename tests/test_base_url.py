@@ -1,7 +1,7 @@
 # Проверяем доступность главной ручки
 import requests
 import pytest
-from settings import PREFIX
+from src.settings import PREFIX
 
 
 @pytest.mark.parametrize("url", [

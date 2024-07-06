@@ -1,5 +1,5 @@
 # Проверяем создание объекта в БД
-from settings import PREFIX
+from src.settings import PREFIX
 import pytest
 import requests
 import tempfile

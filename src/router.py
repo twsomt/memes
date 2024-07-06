@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, UploadFile
 
-from custom_exceptions import MemeNotFound
-from repository import MemeRepository
-from schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
-from settings import PREFIX, TAGS
+from src.custom_exceptions import MemeNotFound
+from src.repository import MemeRepository
+from src.schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
+from src.settings import PREFIX, TAGS
 
 router = APIRouter(
     prefix=PREFIX,

@@ -3,12 +3,12 @@ import uuid
 from fastapi import UploadFile, status
 from sqlalchemy import select
 
-from custom_exceptions import MemeNotFound
-from database import MemeOrm, new_session
-from decorators import handle_exceptions, async_cache
-from functions import extract_relative_path, translit
-from minio_client import delete_image_from_minio, upload_image_to_minio
-from schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
+from src.custom_exceptions import MemeNotFound
+from src.database import MemeOrm, new_session
+from src.decorators import handle_exceptions, async_cache
+from src.functions import extract_relative_path, translit
+from src.minio.minio_client import delete_image_from_minio, upload_image_to_minio
+from src.schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
 
 
 class MemeRepository:

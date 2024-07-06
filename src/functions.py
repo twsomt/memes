@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-from minio_client import MINIO_BUCKET_NAME
+from src.minio.minio_client import MINIO_BUCKET_NAME
 
 
 async def translit(text):

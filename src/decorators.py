@@ -5,7 +5,7 @@ import functools
 
 from fastapi import HTTPException, status
 
-from custom_exceptions import MemeNotFound
+from src.custom_exceptions import MemeNotFound
 
 
 def handle_exceptions(func):
