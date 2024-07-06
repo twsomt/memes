@@ -1,0 +1,385 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "FastAPI",
+		"version": "0.1.0"
+	},
+	"paths": {
+		"/api/v1/memes": {
+			"get": {
+				"tags": [
+					"Мемы тут"
+				],
+				"summary": "Get Memes",
+				"description": "Возвращает список мемов с использованием пагинации.\n\nАргументы:\n    offset (int, optional): Сдвиг (начиная с какого мемаса возвращать). По умолчанию 0.\n    limit (int, optional): Лимит мемов (сколько вернуть). По умолчанию 10.\n\nВозвращает:\n    list[Smeme]: Список объектов Smeme, представляющих мемы.\n\nПример:\n    Пример запроса для получения первых 10 мемов:\n\n        GET /{PREFIX}/get_memes?offset=0&limit=10",
+				"operationId": "get_memes_api_v1_memes_get",
+				"parameters": [
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 0,
+							"title": "Offset"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 10,
+							"title": "Limit"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Smeme"
+									},
+									"title": "Response Get Memes Api V1 Memes Get"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"Мемы тут"
+				],
+				"summary": "Add Meme",
+				"description": "Добавляет новый мем.\n\nАргументы:\n    meme (SmemeAdd): Данные нового мема для добавления.\n\nВозвращает:\n    Smeme: Объект Smeme, представляющий только что добавленный мем.\n\nПример:\n    Пример запроса для добавления нового мема:\n\n        POST /{PREFIX}/add_meme\n\n        {\n            \"field1\": \"value1\",\n            \"field2\": \"value2\",\n            ...\n        }",
+				"operationId": "add_meme_api_v1_memes_post",
+				"parameters": [
+					{
+						"name": "description",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "null"
+								}
+							],
+							"title": "Description"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/Body_add_meme_api_v1_memes_post"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Smeme"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/memes/{meme_id}": {
+			"get": {
+				"tags": [
+					"Мемы тут"
+				],
+				"summary": "Get Meme",
+				"description": "Получает информацию о конкретном меме по его ID.\n\nАргументы:\n    meme_id (int): ID мема.\n\nВозвращает:\n    Smeme: Объект Smeme, представляющий запрошенный мем.\n\nПример:\n    Пример запроса для получения информации о меме с ID = 1:\n\n        GET /{PREFIX}/{meme_id}",
+				"operationId": "get_meme_api_v1_memes__meme_id__get",
+				"parameters": [
+					{
+						"name": "meme_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Meme Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Smeme"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"Мемы тут"
+				],
+				"summary": "Update Meme",
+				"description": "Обновляет информацию о конкретном меме по его ID.\n\nАргументы:\n    meme_id (int): ID мема, который надо обновить.\n    update_data (SmemeUpdate): Данные для обновления мема.\n\nВозвращает:\n    Smeme: Обновленный объект Smeme, представляющий мем.\n\nПример:\n    Пример запроса для обновления информации о меме с ID = 1:\n\n        PUT /{PREFIX}/{meme_id}\n\n        {\n            \"field1\": \"new_value1\",\n            \"field2\": \"new_value2\",\n            ...\n        }",
+				"operationId": "update_meme_api_v1_memes__meme_id__put",
+				"parameters": [
+					{
+						"name": "description",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "null"
+								}
+							],
+							"title": "Description"
+						}
+					},
+					{
+						"name": "id",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Id"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/Body_update_meme_api_v1_memes__meme_id__put"
+									}
+								],
+								"title": "Body"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Smeme"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": [
+					"Мемы тут"
+				],
+				"summary": "Delete Meme",
+				"description": "Удаляет информацию о конкретном меме по его ID.\n\nАргументы:\n    meme_id (int): ID мема, который надо удалить.\n\nВозвращает:\n    dict: Словарь с информацией об успешном удалении мема.\n\nПример:\n    Пример запроса для удаления мема с идентификатором 1:\n\n        DELETE /{PREFIX}/{meme_id}",
+				"operationId": "delete_meme_api_v1_memes__meme_id__delete",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"title": "Response Delete Meme Api V1 Memes  Meme Id  Delete"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Body_add_meme_api_v1_memes_post": {
+				"properties": {
+					"image": {
+						"type": "string",
+						"format": "binary",
+						"title": "Image"
+					}
+				},
+				"type": "object",
+				"required": [
+					"image"
+				],
+				"title": "Body_add_meme_api_v1_memes_post"
+			},
+			"Body_update_meme_api_v1_memes__meme_id__put": {
+				"properties": {
+					"image": {
+						"type": "string",
+						"format": "binary",
+						"title": "Image"
+					}
+				},
+				"type": "object",
+				"title": "Body_update_meme_api_v1_memes__meme_id__put"
+			},
+			"HTTPValidationError": {
+				"properties": {
+					"detail": {
+						"items": {
+							"$ref": "#/components/schemas/ValidationError"
+						},
+						"type": "array",
+						"title": "Detail"
+					}
+				},
+				"type": "object",
+				"title": "HTTPValidationError"
+			},
+			"Smeme": {
+				"properties": {
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					},
+					"image_path": {
+						"type": "string",
+						"title": "Image Path"
+					},
+					"description": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Description"
+					}
+				},
+				"type": "object",
+				"required": [
+					"id",
+					"image_path"
+				],
+				"title": "Smeme"
+			},
+			"ValidationError": {
+				"properties": {
+					"loc": {
+						"items": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "integer"
+								}
+							]
+						},
+						"type": "array",
+						"title": "Location"
+					},
+					"msg": {
+						"type": "string",
+						"title": "Message"
+					},
+					"type": {
+						"type": "string",
+						"title": "Error Type"
+					}
+				},
+				"type": "object",
+				"required": [
+					"loc",
+					"msg",
+					"type"
+				],
+				"title": "ValidationError"
+			}
+		}
+	}
+}
