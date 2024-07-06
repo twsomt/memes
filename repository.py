@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from custom_exceptions import MemeNotFound
 from database import MemeOrm, new_session
-from decorators import handle_exceptions
+from decorators import handle_exceptions, async_cache
 from functions import extract_relative_path, translit
 from minio_client import delete_image_from_minio, upload_image_to_minio
 from schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
@@ -37,6 +37,7 @@ class MemeRepository:
 
     @classmethod
     @handle_exceptions
+    @async_cache(ttl=60)
     async def get_all(
         cls,
         offset: int = 0,
@@ -52,6 +53,7 @@ class MemeRepository:
 
     @classmethod
     @handle_exceptions
+    @async_cache(ttl=60)
     async def get_one(
         cls,
         meme_id: int
