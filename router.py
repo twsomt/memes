@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 
 from custom_exceptions import MemeNotFound
 from repository import MemeRepository
-from schemas import Smeme, SmemeAdd, SmemeUpdate
+from schemas import Smeme, SmemeAdd, SmemeDelete, SmemeUpdate
 from settings import PREFIX, TAGS
 
 router = APIRouter(
@@ -33,11 +33,7 @@ async def get_memes(
 
             GET /{PREFIX}/get_memes?offset=0&limit=10
     """
-
-    memes = await MemeRepository.get_all(
-        offset=offset,
-        limit=limit
-    )
+    memes = await MemeRepository.get_all(offset=offset, limit=limit)
     return memes
 
 
@@ -67,7 +63,8 @@ async def get_meme(
 
 @router.post("")
 async def add_meme(
-    meme: Annotated[SmemeAdd, Depends()]
+    data: Annotated[SmemeAdd, Depends()],
+    image: UploadFile = File()
 ) -> Smeme:
     """
     Добавляет новый мем.
@@ -89,14 +86,14 @@ async def add_meme(
                 ...
             }
     """
-    meme_schema = await MemeRepository.add_one(meme)
-    return meme_schema
+    new_meme = await MemeRepository.add_one(data, image)
+    return new_meme
 
 
 @router.put("/{meme_id}")
 async def update_meme(
-    meme_id: int,
-    update_data: Annotated[SmemeUpdate, Depends()]
+    data: Annotated[SmemeUpdate, Depends()],
+    image: UploadFile = File(None)
 ) -> Smeme:
     """
     Обновляет информацию о конкретном меме по его ID.
@@ -119,18 +116,15 @@ async def update_meme(
                 ...
             }
     """
-    meme = await MemeRepository.update_one(
-        meme_id,
-        update_data
-    )
-    if meme is None:
+    updated_meme = await MemeRepository.update_one(data, image)
+    if updated_meme is None:
         raise MemeNotFound()
-    return meme
+    return updated_meme
 
 
 @router.delete("/{meme_id}")
 async def delete_meme(
-    meme_id: int
+    data: Annotated[SmemeDelete, Depends()]
 ) -> dict:
     """
     Удаляет информацию о конкретном меме по его ID.
@@ -146,6 +140,5 @@ async def delete_meme(
 
             DELETE /{PREFIX}/{meme_id}
     """
-
-    result = await MemeRepository.delete_one(meme_id)
+    result = await MemeRepository.delete_one(data.id)
     return result

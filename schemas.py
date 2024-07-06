@@ -1,27 +1,25 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class SmemeAdd(BaseModel):
-    name: str
     description: Optional[str] = None
 
 
-class Smeme(SmemeAdd):
+class Smeme(BaseModel):
     id: int
+    image_path: str
+    description: Optional[str] = None
 
-    model_config = ConfigDict(from_attributes=True)
-
-
-class SmemeId(BaseModel):
-    ok: bool = True
-    meme_id: int
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 
 class SmemeUpdate(SmemeAdd):
-    pass
+    id: int
 
 
-class SmemeDelete(SmemeAdd):
-    pass
+class SmemeDelete(BaseModel):
+    id: int
