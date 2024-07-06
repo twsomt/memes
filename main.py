@@ -7,13 +7,15 @@ from router import router as memes_router
 from settings import DEBUG
 
 # При дебаге после перезагрузки чистим БД
-if DEBUG:
-    @asynccontextmanager
-    async def lifespan(app: FastAPI):
-        await delete_tables()
-        await create_tables()
-        yield
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await delete_tables()
+    await create_tables()
+    yield
+
+if DEBUG:
     app = FastAPI(lifespan=lifespan)
 else:
     app = FastAPI()
